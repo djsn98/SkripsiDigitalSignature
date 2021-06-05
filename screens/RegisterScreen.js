@@ -10,20 +10,20 @@ const RegisterScreen = () => {
     const uploadPhoto = () => {
         let options = {
             noData: true,
-        }
+        };
 
         launchImageLibrary(options, (response) => {
-            console.log(response)
+            console.log(response);
             if (response.didCancel) {
                 console.log('User cancelled image picker');
-                return
+                return;
             }
             if (response.assets[0].uri) {
                 setPhoto({ uri: response.assets[0].uri });
                 console.log('test');
             }
-        })
-    }
+        });
+    };
 
 
     return (
@@ -34,7 +34,6 @@ const RegisterScreen = () => {
             <View style={styles.body}>
                 <View style={{ flex: 0.25, marginBottom: 10, }}>
                     <TouchableOpacity onPress={uploadPhoto}>
-
                         <Image style={{ height: 100, width: 80, }} source={photo} />
                     </TouchableOpacity>
                 </View>

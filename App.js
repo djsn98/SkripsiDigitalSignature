@@ -1,13 +1,18 @@
 /* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
 import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen'
+import RegisterScreen from './screens/RegisterScreen';
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import Router from './screens/index';
 
 export default class App extends Component {
   render() {
     return (
       // <LoginScreen />
-      <RegisterScreen />
+      // <RegisterScreen />
+      <Router />
     );
   }
 }
