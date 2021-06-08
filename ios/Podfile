@@ -14,6 +14,10 @@ target 'SkripsiDigitalSignature' do
 
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 
+  pod 'react-native-cameraroll', :path => '../node_modules/@react-native-community/cameraroll'
+
+  pod 'RNOS', :path => '../node_modules/react-native-os'
+
   target 'SkripsiDigitalSignatureTests' do
     inherit! :complete
     # Pods for testing

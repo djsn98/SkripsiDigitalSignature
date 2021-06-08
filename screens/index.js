@@ -3,7 +3,8 @@ import 'react-native-gesture-handler';
 import * as React from 'react';
 import { Text, View } from 'react-native';
 
-import SignScreen from './SignScreen';
+import SignAuthScreen from './SignAuthScreen';
+import SignPad from './SignPad';
 import VerifyScreen from './VerifyScreen';
 import SendScreen from './SendScreen';
 
@@ -13,6 +14,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 
 
 const Tab = createBottomTabNavigator();
@@ -52,7 +54,7 @@ export default function Router() {
                         inactiveTintColor: 'gray',
                     }}
                 >
-                    <Tab.Screen name="Sign" component={SignScreen} />
+                    <Tab.Screen name="Sign" component={SignPad} />
                     <Tab.Screen name="Verify" component={VerifyScreen} />
                     <Tab.Screen name="Send" component={SendScreen} />
                 </Tab.Navigator>

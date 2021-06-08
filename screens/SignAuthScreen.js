@@ -1,17 +1,18 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { TextInput, Text, View, Button, StyleSheet } from 'react-native';
+import { View, Button, Text, TextInput, StyleSheet } from 'react-native';
 
-const VerifyScreen = () => {
+const SignAuthScreen = () => {
     return (
         <View style={styles.screen}>
             <View style={styles.title}>
-                <Text style={styles.titleName}>Verify</Text>
+                <Text style={styles.titleName}>Sign Auth</Text>
             </View>
             <View style={styles.form}>
                 <View style={styles.inputs}>
-                    <TextInput style={styles.input} placeholder="Masukan Serial Number" />
-                    <TextInput style={styles.input} placeholder="Masukan ID Dokumen" />
+                    <TextInput style={styles.input} placeholder="Masukan username/no.telp" />
+                    <TextInput style={styles.input} placeholder="Masukan Password" />
+
                 </View>
                 <View style={styles.buttons}>
                     <View>
@@ -65,4 +66,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default VerifyScreen;
+export default SignAuthScreen;
