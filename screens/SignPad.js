@@ -7,89 +7,71 @@ import fetch_blob from 'react-native-fetch-blob';
 import CameraRoll from '@react-native-community/cameraroll';
 // import { RemoveBgResult, RemoveBgError, removeBackgroundFromImageBase64 } from "remove.bg";
 let uniqid = require('uniqid');
+const axios = require('axios').default;
 
 
 const SignPad = () => {
     const [signature, setSign] = useState(null);
 
-
-
-    const handleSignature = async (signature) => {
+    const handleSignature = (signature) => {
         // console.log(signature);
         setSign(signature);
         // const path = RNFS.DocumentDirectoryPath + '/image.png';
         // console.log(path);
-
-        try {
-            const granted = await PermissionsAndroid.requestMultiple([
-                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-            ]);
-        } catch (err) {
-            console.warn(err);
-        }
-        const readGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-        const writeGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-        if (!readGranted || !writeGranted) {
-            console.log('Read and write permissions have not been granted');
-            return;
-        }
-
-        const fs = fetch_blob.fs;
-        const dirs = fetch_blob.fs.dirs;
-
-        let sign_id = uniqid();
-        const file_name = `${sign_id}.png`;
-        const file_path = `${dirs.PictureDir}/sign/${file_name}`;
-        console.log(file_path);
-
-        // let base64img_sign = signature.replace('data:image/png;base64,', '');
+        let SN = uniqid();
+        let base64Sign = signature.replace('data:image/png;base64,', '');
 
 
-        // removeBackgroundFromImageBase64({
-        //     base64img_sign,
-        //     apiKey: "123",
-        //     size: "regular",
-        //     type: "auto",
-        //     file_path,
-        // }).then((RemoveBgResult) => {
-        //     console.log(`File saved to`);
-        //     const base64imgs = RemoveBgResult.base64img;
-        // }).catch((RemoveBgError) => {
-        //     console.log(JSON.stringify(RemoveBgError));
-        // });
+        axios.post('https://api-skripsi-digital-signature.herokuapp.com/remove-background', {
+            serialNumber: SN,
+            sign: base64Sign,
+        }).then((response) => {
+            console.log(response.data);
 
-        RNFS.writeFile(file_path, signature.replace('data:image/png;base64,', ''), 'base64')
-            .then((success) => {
-                console.log('Write Success');
-                CameraRoll.save(file_path, "photo");
-                console.log('finish');
-            })
-            .catch((err) => {
-                console.log(err.message);
-            });
+            let saveData = async (data) => {
 
-        // const new_file_path = `${dirs.PictureDir}/sign/${file_name}`;
+                let base64SignRemoveBackground = data;
 
+                try {
+                    const granted = await PermissionsAndroid.requestMultiple([
+                        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                    ]);
+                } catch (err) {
+                    console.warn(err);
+                }
+                const readGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+                const writeGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+                if (!readGranted || !writeGranted) {
+                    console.log('Read and write permissions have not been granted');
+                    return;
+                }
 
+                const fs = fetch_blob.fs;
+                const dirs = fetch_blob.fs.dirs;
 
-        // RNFS.moveFile(file_path, new_file_path)
-        //     .then((success) => {
-        //         console.log('Copy Success');
-        //     })
-        //     .catch((err) => {
-        //         console.log(err.message);
-        //     })
+                // let sign_id = uniqid();
+                const file_name = `${base64SignRemoveBackground.serialNumber}.png`;
+                const file_path = `${dirs.PictureDir}/sign/${file_name}`;
+                console.log(file_path);
 
+                RNFS.writeFile(file_path, base64SignRemoveBackground.sign, 'base64')
+                    .then((success) => {
+                        console.log('Write Success');
+                        CameraRoll.save(file_path, "photo");
+                        console.log('finish');
+                    })
+                    .catch((err) => {
+                        console.log(err.message);
+                    });
 
-        // RNFS.writeFile(path, signature.replace('data:image/png;base64,', ''), 'base64')
-        //     .then((success) => {
-        //         console.log('FILE WRITTEN!');
+            };
 
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //     })
+            saveData(response.data);
+
+        }).catch((error) => {
+            console.log(error);
+        });
 
         // RNFS.readFile(path, 'base64')
         //     .then((data) => {
@@ -100,10 +82,6 @@ const SignPad = () => {
         //         console.log(error);
         //     });
 
-
-
-
-
         // RNFS.unlink(path)
         //     .then(() => {
         //         console.log('FILE DELETED');
@@ -112,7 +90,6 @@ const SignPad = () => {
         //     .catch((err) => {
         //         console.log(err.message);
         //     });
-
     };
 
     const handleEmpty = () => {

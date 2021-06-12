@@ -4,9 +4,11 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 
 import SignAuthScreen from './SignAuthScreen';
-import SignPad from './SignPad';
+// import SignPad from './SignPad';
 import VerifyScreen from './VerifyScreen';
 import SendScreen from './SendScreen';
+import UploadDocScreen from './UploadDocScreen';
+import InsertScreen from './InsertScreen';
 
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -54,7 +56,7 @@ export default function Router() {
                         inactiveTintColor: 'gray',
                     }}
                 >
-                    <Tab.Screen name="Sign" component={SignPad} />
+                    <Tab.Screen name="Sign" component={InsertScreen} />
                     <Tab.Screen name="Verify" component={VerifyScreen} />
                     <Tab.Screen name="Send" component={SendScreen} />
                 </Tab.Navigator>

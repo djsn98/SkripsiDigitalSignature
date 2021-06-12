@@ -18,6 +18,11 @@ target 'SkripsiDigitalSignature' do
 
   pod 'RNOS', :path => '../node_modules/react-native-os'
 
+
+  pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'SkripsiDigitalSignatureTests' do
     inherit! :complete
     # Pods for testing
