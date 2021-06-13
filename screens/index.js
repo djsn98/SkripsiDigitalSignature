@@ -9,6 +9,8 @@ import VerifyScreen from './VerifyScreen';
 import SendScreen from './SendScreen';
 import UploadDocScreen from './UploadDocScreen';
 import InsertScreen from './InsertScreen';
+import SendForm from './SendForm';
+import RecieveDocScreen from './ReceiveDocScreen';
 
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -58,7 +60,7 @@ export default function Router() {
                 >
                     <Tab.Screen name="Sign" component={InsertScreen} />
                     <Tab.Screen name="Verify" component={VerifyScreen} />
-                    <Tab.Screen name="Send" component={SendScreen} />
+                    <Tab.Screen name="Send" component={RecieveDocScreen} />
                 </Tab.Navigator>
             </NavigationContainer>
         </View>
