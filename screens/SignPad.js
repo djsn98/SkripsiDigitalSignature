@@ -47,8 +47,9 @@ const SignPad = () => {
                     return;
                 }
 
-                const fs = fetch_blob.fs;
+                // const fs = fetch_blob.fs;
                 const dirs = fetch_blob.fs.dirs;
+                //Tulis Ulang
 
                 // let sign_id = uniqid();
                 const file_name = `${base64SignRemoveBackground.serialNumber}.png`;

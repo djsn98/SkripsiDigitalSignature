@@ -1,8 +1,38 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { set } from 'react-native-reanimated';
+const axios = require('axios').default;
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
+    const [auth, setAuth] = useState(false);
+    const [usernameOrNoTelp, setUsernameOrNoTelp] = useState('');
+    const [password, setPassword] = useState('');
+    // const [navigate] = useState(navigation.navigate);
+
+
+    useEffect(() => {
+        console.log(auth);
+        console.log("useEffect");
+        if (auth) {
+            navigation.navigate('TabStack');
+        }
+        setAuth(false);
+    }, [auth, navigation]);
+
+    const loginHandler = () => {
+        // navigation.navigate('TabStack');
+        axios.post('https://api-skripsi-digital-signature.herokuapp.com/login', {
+            usernameOrNoTelp: usernameOrNoTelp,
+            password: password,
+        }).then((response) => {
+            console.log(response.data);
+            setAuth(response.data.auth);
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
+
     return (
         <View style={styles.screen}>
             <View style={styles.title}>
@@ -10,18 +40,28 @@ const LoginScreen = () => {
             </View>
             <View style={styles.form}>
                 <View style={styles.inputs}>
-                    <TextInput style={styles.input} placeholder="Username/No.Telp" />
-                    <TextInput style={styles.input} placeholder="Password" />
+                    <TextInput
+                        onChangeText={(value) => {
+                            setUsernameOrNoTelp(value);
+                            console.log(value);
+                        }}
+                        style={styles.input} placeholder="Username/No.Telp" />
+                    <TextInput
+                        onChangeText={(value) => {
+                            setPassword(value);
+                            console.log(value);
+                        }}
+                        style={styles.input} placeholder="Password" />
                 </View>
                 <View style={styles.buttons}>
                     <View>
-                        <Button title="Login" />
+                        <Button onPress={loginHandler} title="Login" />
                     </View>
                     <View style={styles.or}>
                         <Text>OR</Text>
                     </View>
                     <View>
-                        <Button title="Register" />
+                        <Button onPress={() => navigation.navigate('RegisterScreen')} title="Register" />
                     </View>
                 </View>
             </View>

@@ -10,8 +10,7 @@ const SignAuthScreen = () => {
             </View>
             <View style={styles.form}>
                 <View style={styles.inputs}>
-                    <TextInput style={styles.input} placeholder="Masukan username/no.telp" />
-                    <TextInput style={styles.input} placeholder="Masukan Password" />
+                    <TextInput style={styles.input} placeholder="Masukan PIN" />
 
                 </View>
                 <View style={styles.buttons}>

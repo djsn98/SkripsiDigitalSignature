@@ -2,10 +2,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
+const axios = require('axios').default;
 
-
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
     const [photo, setPhoto] = useState(require('../assets/upload-photo-icon.jpg'));
+    // const [photoData, setPhotoData] = useState(null);
+
+    const loginHandler = () => {
+        navigation.navigate('LoginScreen');
+    };
 
     const uploadPhoto = () => {
         let options = {
@@ -20,11 +25,35 @@ const RegisterScreen = () => {
             }
             if (response.assets[0].uri) {
                 setPhoto({ uri: response.assets[0].uri });
+                // setPhotoData(response);
                 console.log('test');
             }
         });
     };
 
+    const registerHandler = () => {
+        console.log(photo.uri);
+        let photoProfile = {
+            uri: photo.uri.replace('file://', ''),
+            type: 'image/jpg',
+            name: 'rn_image_picker_lib_temp_2b24058f-2110-4ce9-b3fc-5a7ab433f4f9.jpg',
+        };
+
+        const form = new FormData();
+
+        form.append('image', photoProfile);
+
+        axios.post('https://api-skripsi-digital-signature.herokuapp.com/register', {
+            body: form,
+            header: {
+                'content-type': 'image/jpg',
+            },
+        }).then((response) => {
+            console.log(response.data);
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
 
     return (
         <View style={styles.screen}>
@@ -43,17 +72,17 @@ const RegisterScreen = () => {
                     <TextInput style={styles.input} placeholder="Password" />
                     <TextInput style={styles.input} placeholder="NIK" />
                     <TextInput style={styles.input} placeholder="No. Telp" />
-                    <TextInput style={styles.input} placeholder="Password" />
+                    <TextInput style={styles.input} placeholder="PIN" />
                 </View>
                 <View style={styles.buttons}>
                     <View>
-                        <Button title="Login" />
+                        <Button onPress={loginHandler} title="Login" />
                     </View>
                     <View style={styles.or}>
                         <Text>OR</Text>
                     </View>
                     <View>
-                        <Button title="Register" />
+                        <Button onPress={registerHandler} title="Register" />
                     </View>
                 </View>
             </View>
