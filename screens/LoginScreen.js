@@ -1,24 +1,37 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { set } from 'react-native-reanimated';
+
 const axios = require('axios').default;
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ route, navigation }) => {
     const [auth, setAuth] = useState(false);
     const [usernameOrNoTelp, setUsernameOrNoTelp] = useState('');
     const [password, setPassword] = useState('');
     // const [navigate] = useState(navigation.navigate);
+    const [isRegisterComplete, setIsRegisterComplete] = useState('transparent');
+
+
+
 
 
     useEffect(() => {
         console.log(auth);
         console.log("useEffect");
         if (auth) {
+            route.params = false;
+            setIsRegisterComplete('transparent');
             navigation.navigate('TabStack');
         }
         setAuth(false);
-    }, [auth, navigation]);
+
+        if (route.params) {
+            if (route.params.isRegisterComplete) {
+                setIsRegisterComplete('green');
+            }
+
+        }
+    }, [auth, navigation, route]);
 
     const loginHandler = () => {
         // navigation.navigate('TabStack');
@@ -64,6 +77,7 @@ const LoginScreen = ({ navigation }) => {
                         <Button onPress={() => navigation.navigate('RegisterScreen')} title="Register" />
                     </View>
                 </View>
+                <Text style={{ color: isRegisterComplete, marginTop: 25, fontSize: 16 }}>Regsitrasi Berhasil, Silahkan login...</Text>
             </View>
         </View>
     );
