@@ -9,7 +9,7 @@ import ImgToBase64 from 'react-native-image-base64';
 import RNFS, { readFile } from 'fs';
 const axios = require('axios').default;
 
-const InsertScreen = ({ route }) => {
+const InsertScreen = ({ route, navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [buttonName, setButtonName] = useState('Register Sign');
     const [docURI, setDocURI] = useState(route.params.docURI);
@@ -17,10 +17,22 @@ const InsertScreen = ({ route }) => {
     const [isSNCopy, setIsSNCopy] = useState('  copy ');
     const [isIDCopy, setIsIDCopy] = useState('  copy ');
 
+    const [registMessCol, setRegistMessCol] = useState('transparent');
+    const [mess, setMess] = useState('Berhasil!');
+
+    const [buttonHandler, setButtonHandler] = useState(registerSignHandler);
+
+
 
     console.log(route.params);
 
-    const registerSignHandler = () => {
+
+    function backHandler() {
+        navigation.navigate('SignAuthScreen');
+    };
+
+    function registerSignHandler() {
+        setIsLoading(true);
         let signDate = new Date();
         console.log(signDate);
 
@@ -59,6 +71,19 @@ const InsertScreen = ({ route }) => {
             .then(response => response.json())
             .then(data => {
                 console.log(data);
+                if (data.registeredSign) {
+                    setButtonHandler(backHandler);
+                    setButtonName('Selesai');
+                    setIsLoading(false);
+                    setRegistMessCol('green');
+                } else {
+                    setButtonHandler(backHandler);
+                    setButtonName('Buat Ulang');
+                    setIsLoading(false);
+                    setMess('Gagal, silahkan buat tanda tangan ulang!')
+                    setRegistMessCol('red');
+                }
+
             })
             .catch((error) => {
                 console.log(error);
@@ -203,6 +228,7 @@ const InsertScreen = ({ route }) => {
         // }
     };
 
+
     const openPDFHandler = () => {
         const wpsOptions = {
             "OpenMode": "ReadOnly",
@@ -281,10 +307,12 @@ const InsertScreen = ({ route }) => {
             </TouchableOpacity>
             <View style={{ marginTop: 50, width: '83%', alignSelf: 'center' }}>
                 <Button
-                    onPress={registerSignHandler}
+                    onPress={buttonHandler}
                     title={buttonName}
                     loading={isLoading}
                 />
+
+                <Text style={{ alignSelf: 'center', marginTop: 25, fontSize: 17, color: registMessCol }}>{mess}</Text>
             </View>
         </View>
     );

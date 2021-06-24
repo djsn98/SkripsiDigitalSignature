@@ -23,6 +23,7 @@ const SignPad = ({ route, navigation }) => {
         let base64Sign = signature.replace('data:image/png;base64,', '');
 
 
+        console.log(SN);
         axios.post('https://api-skripsi-digital-signature.herokuapp.com/remove-background', {
             serialNumber: SN,
             sign: base64Sign,
