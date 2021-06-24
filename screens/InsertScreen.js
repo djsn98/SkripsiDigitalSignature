@@ -25,7 +25,7 @@ const InsertScreen = ({ route }) => {
         console.log(signDate);
 
         let pdfToUpload = {
-            uri: route.params.docURI,
+            uri: `file://${route.params.docURI}`,
             type: 'application/pdf',
             name: `${route.params.docID}.pdf`,
         };
@@ -34,7 +34,16 @@ const InsertScreen = ({ route }) => {
 
         const form = new FormData();
 
-        // form.append('dgdg', 'gdgfdg');
+        let signData = {
+            username: route.params.username,
+            SN: route.params.SN,
+            tglPembuatan: signDate,
+            IDDok: route.params.docID,
+            namaDok: route.params.namaDok,
+            jenisDok: route.params.jnsDok,
+        };
+
+        form.append('signData', JSON.stringify(signData));
         form.append('document', pdfToUpload);
 
         console.log(form._parts);
