@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { TextInput, Text, View, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import WPSOffice from 'react-native-wps-office';
 import { Button } from 'react-native-elements';
+var dateFormat = require("dateformat");
 const axios = require('axios').default;
 
 const UnverifiedInform = () => {
@@ -13,27 +14,39 @@ const UnverifiedInform = () => {
     );
 };
 
-const VerifiedInform = ({ openDocFunc }) => {
+const VerifiedInform = ({ openDocFunc, dataVerifikasi }) => {
     return (
         <>
             <View style={{ alignItems: 'center', borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: 10, backgroundColor: 'springgreen', width: '90%', marginTop: 20 }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Tanda Tangan Asli dan Terdaftar</Text>
             </View>
             <View style={{ padding: 15, backgroundColor: 'white', width: '90%', marginTop: 2 }}>
-                <Text style={{ fontWeight: 'bold' }}>Nama Penandatangan</Text>
-                <Text style={{ fontSize: 17 }}>Dennis Jason</Text>
-                <Text style={{ fontWeight: 'bold' }}>Username Penandatangan</Text>
-                <Text style={{ fontSize: 17 }}>@djsn98</Text>
-                <Text style={{ fontWeight: 'bold' }}>SN Tanda Tangan</Text>
-                <Text style={{ fontSize: 17 }}>sj23h24in2k</Text>
-                <Text style={{ fontWeight: 'bold' }}>Tgl Pembuatan TTD</Text>
-                <Text style={{ fontSize: 17 }}>Sabtu, 10 Januari 2020</Text>
+                <View>
+                    <Text style={{ fontWeight: 'bold' }}>Nama Penandatangan</Text>
+                    <Text style={{ fontSize: 17 }}>{dataVerifikasi.Nama}</Text>
+                </View>
+                <View style={{ marginTop: 5 }}>
+                    <Text style={{ fontWeight: 'bold' }}>Username Penandatangan</Text>
+                    <Text style={{ fontSize: 17 }}>{dataVerifikasi.Username}</Text>
+                </View>
+                <View style={{ marginTop: 5 }}>
+                    <Text style={{ fontWeight: 'bold' }}>SN Tanda Tangan</Text>
+                    <Text style={{ fontSize: 17 }}>{dataVerifikasi.Serial_Number}</Text>
+                </View>
+                <View style={{ marginTop: 5 }}>
+                    <Text style={{ fontWeight: 'bold' }}>Tgl Pembuatan TTD</Text>
+                    <Text style={{ fontSize: 17 }}>{dataVerifikasi.Tgl_Pembuatan}</Text>
+                </View>
             </View>
             <View style={{ padding: 15, backgroundColor: 'white', width: '90%', marginTop: 2 }}>
-                <Text style={{ fontWeight: 'bold' }}>Nama Dokumen</Text>
-                <Text style={{ fontSize: 17 }}>Ijazah</Text>
-                <Text style={{ fontWeight: 'bold' }}>ID Dokumen</Text>
-                <Text style={{ fontSize: 17 }}>sj239n2j392j</Text>
+                <View style={{ marginTop: 5 }}>
+                    <Text style={{ fontWeight: 'bold' }}>Nama Dokumen</Text>
+                    <Text style={{ fontSize: 17 }}>{dataVerifikasi.Nama_Dok}</Text>
+                </View>
+                <View style={{ marginTop: 5 }}>
+                    <Text style={{ fontWeight: 'bold' }}>ID Dokumen</Text>
+                    <Text style={{ fontSize: 17 }}>{dataVerifikasi.ID_Dok}</Text>
+                </View>
             </View>
             <View style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10, padding: 15, backgroundColor: 'white', width: '90%', marginTop: 2, marginBottom: 15 }}>
                 <TouchableOpacity onPress={openDocFunc}>
@@ -41,7 +54,7 @@ const VerifiedInform = ({ openDocFunc }) => {
                         <View>
                             <Image style={{ height: 60, width: 60 }} source={require('../assets/doc-icon.png')} />
                         </View>
-                        <Text style={{ marginLeft: 15 }}>example.pdf</Text>
+                        <Text style={{ marginLeft: 15 }}>{dataVerifikasi.Nama_Dok}.pdf</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -52,10 +65,12 @@ const VerifiedInform = ({ openDocFunc }) => {
 const VerifyScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [docURI, setDocURI] = useState('/data/user/0/com.skripsidigitalsignature/files/27c1fca6-15ab-4996-bd49-e9a9c823487a/276-690-7-PB.pdf');
-    const [verifyState, setVerifyState] = useState('verified');
+    const [verifyState, setVerifyState] = useState('');
 
     const [serialNumber, setSerialNumber] = useState('');
     const [IDDokumen, setIDDokumen] = useState('');
+
+    const [dataVerifikasi, setDataVerifikasi] = useState({});
 
 
     const openPDFHandler = () => {
@@ -88,11 +103,83 @@ const VerifyScreen = () => {
     }
 
     const verifyHandler = () => {
+        setIsLoading(true);
         axios.post('https://api-skripsi-digital-signature.herokuapp.com/verify', {
             serialNumber: serialNumber,
             IDDokumen: IDDokumen,
         }).then((response) => {
-            console.log(response);
+            setIsLoading(false);
+            console.log(response.data);
+
+            if (response.data.length == 0) {
+                console.log('unverified');
+                setVerifyState('unverified');
+            } else {
+                // console.log(response.data[0].Tgl_Pembuatan);
+                console.log('verified');
+
+                // var now = new Date();
+
+                dateFormat.i18n = {
+                    dayNames: [
+                        "Ming",
+                        "Sen",
+                        "Sel",
+                        "Rab",
+                        "Kam",
+                        "Jum",
+                        "Sab",
+                        "Minggu",
+                        "Senin",
+                        "Selasa",
+                        "Rabu",
+                        "Kamis",
+                        "Jumat",
+                        "Sabtu",
+                    ],
+                    monthNames: [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "Mei",
+                        "Jun",
+                        "Jul",
+                        "Agu",
+                        "Sep",
+                        "Okt",
+                        "Nov",
+                        "Des",
+                        "Januari",
+                        "Februari",
+                        "Maret",
+                        "April",
+                        "Mei",
+                        "Juni",
+                        "Juli",
+                        "Agustus",
+                        "September",
+                        "Oktober",
+                        "November",
+                        "Desember",
+                    ],
+                    timeNames: ["a", "p", "am", "pm", "A", "P", "AM", "PM"],
+                };
+
+                let konversiTanggal = dateFormat(response.data[0].Tgl_Pembuatan.slice(0, 23), "dddd, d mmmm yyyy");
+
+                console.log(konversiTanggal);
+
+                setDataVerifikasi({
+                    Nama: response.data[0].Nama,
+                    Username: response.data[0].Username,
+                    Serial_Number: response.data[0].Serial_Number,
+                    Nama_Dok: response.data[0].Nama_Dok,
+                    ID_Dok: '3k7z1kq61u7qh',
+                    Tgl_Pembuatan: konversiTanggal,
+                });
+                setVerifyState('verified');
+            }
         }).catch((err) => {
             console.log(err);
         })
@@ -105,7 +192,7 @@ const VerifyScreen = () => {
     } else if (verifyState == 'unverified') {
         VerifyInfo = <UnverifiedInform />;
     } else if (verifyState == 'verified') {
-        VerifyInfo = <VerifiedInform openDocFunc={openPDFHandler} />;
+        VerifyInfo = <VerifiedInform openDocFunc={openPDFHandler} dataVerifikasi={dataVerifikasi} />;
     }
     return (
         <ScrollView>
@@ -135,6 +222,7 @@ const VerifyScreen = () => {
                     <View style={styles.buttons}>
                         <View>
                             <Button
+                                onPress={verifyHandler}
                                 title="Submit"
                                 loading={isLoading}
                             />

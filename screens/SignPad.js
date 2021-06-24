@@ -10,8 +10,9 @@ let uniqid = require('uniqid');
 const axios = require('axios').default;
 
 
-const SignPad = () => {
+const SignPad = ({ route, navigation }) => {
     const [signature, setSign] = useState(null);
+
 
     const handleSignature = (signature) => {
         // console.log(signature);
@@ -28,7 +29,7 @@ const SignPad = () => {
         }).then((response) => {
             console.log(response.data);
 
-            let saveData = async (data) => {
+            let saveData = async (data, SN) => {
 
                 let base64SignRemoveBackground = data;
 
@@ -61,6 +62,7 @@ const SignPad = () => {
                         console.log('Write Success');
                         CameraRoll.save(file_path, "photo");
                         console.log('finish');
+                        navigation.navigate('UploadDocScreen', { username: route.params.username, SN: SN, filePath: file_path });
                     })
                     .catch((err) => {
                         console.log(err.message);
@@ -68,7 +70,8 @@ const SignPad = () => {
 
             };
 
-            saveData(response.data);
+            saveData(response.data, SN);
+
 
         }).catch((error) => {
             console.log(error);

@@ -23,6 +23,9 @@ target 'SkripsiDigitalSignature' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-image-base64', :path => '../node_modules/react-native-image-base64'
+
+
   target 'SkripsiDigitalSignatureTests' do
     inherit! :complete
     # Pods for testing

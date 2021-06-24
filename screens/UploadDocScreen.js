@@ -7,12 +7,20 @@ import WPSOffice from 'react-native-wps-office';
 let uniqid = require('uniqid');
 
 
-const UploadDocScreen = () => {
+const UploadDocScreen = ({ route, navigation }) => {
     const [docURI, setDocURI] = useState('');
     const [isUploaded, setIsUploaded] = useState(false);
     const [docID, setDocID] = useState(uniqid());
     const [docTitle, setDocTitle] = useState('');
 
+    const [namaDok, setNamaDok] = useState('');
+    const [jnsDok, setJnsDok] = useState('');
+
+    const [isDocUploaded, setIsDocUploaded] = useState('transparent');
+    const [isDocNameFilled, setIsDocNameFilled] = useState('transparent');
+
+    // console.log(route);
+    // console.log(docID);
 
     const pdfPickerHandler = async () => {
         try {
@@ -25,6 +33,7 @@ const UploadDocScreen = () => {
                 res.uri,
             );
             setDocURI(res.fileCopyUri);
+            console.log(docURI);
             setDocTitle(res.name);
             setIsUploaded(true);
 
@@ -64,7 +73,23 @@ const UploadDocScreen = () => {
         //     .catch((error) => {
         //         console.log(error);
         //     });
-    }
+    };
+
+    const nextHandler = () => {
+        if (namaDok != '' && docURI != '') {
+            navigation.navigate('InsertScreen', {
+                username: route.params.username,
+                namaDok: namaDok,
+                jnsDok: jnsDok,
+                docID: docID,
+                docURI: docURI,
+                docTitle: docTitle,
+                SN: route.params.SN,
+                signPath: route.params.filePath,
+            });
+        }
+        setIsDocUploaded('red');
+    };
 
     return (
         <View style={styles.screen}>
@@ -83,9 +108,9 @@ const UploadDocScreen = () => {
                                 <TouchableOpacity onPress={() => {
                                     setDocURI('');
                                     setIsUploaded(false)
-                                    console.log('File batal diupload')
+                                    console.log('File batal diupload');
                                 }}>
-                                    <View style={{ marginLeft: 70, marginRight: 5 }}>
+                                    <View style={{ marginRight: 5 }}>
                                         <Image style={{ height: 60, width: 60, tintColor: 'gray' }} source={require('../assets/cancel-upload.png')} />
                                     </View>
                                 </TouchableOpacity>
@@ -93,10 +118,11 @@ const UploadDocScreen = () => {
                         </TouchableOpacity>
                     )
                     : (
-                        <View style={styles.buttons}>
-                            <View>
+                        <View style={{ alignItems: 'center', marginBottom: 25 }}>
+                            <View style={styles.buttons}>
                                 <Button onPress={pdfPickerHandler} title="+ Upload Doc" />
                             </View>
+                            <Text style={{ color: isDocUploaded }}>Silahkan upload file anda!</Text>
                         </View>
                     )
                 }
@@ -105,12 +131,34 @@ const UploadDocScreen = () => {
                     <Text style={{ alignSelf: 'flex-start', marginBottom: 10, fontSize: 17 }}>ID : {docID}</Text>
                 </View>
                 <View style={styles.inputs}>
-                    <TextInput style={styles.input} placeholder="Nama Dokumen" />
-                    <TextInput style={styles.input} placeholder="Jenis Dokumen" />
+                    <TextInput
+                        onChangeText={(value) => {
+                            let cleanValue = value.trim();
+                            if (cleanValue == '') {
+                                setIsDocNameFilled('red');
+                            } else {
+                                setIsDocNameFilled('transparent');
+                                setNamaDok(value);
+                                console.log(namaDok);
+                            }
+                        }}
+                        style={styles.input}
+                        placeholder="Nama Dokumen"
+                    />
+                    <Text style={{ marginLeft: 20, color: isDocNameFilled }}>Nama dokumen harus diisi!</Text>
+                    <TextInput
+                        onChangeText={(value) => {
+                            let cleanValue = value.trim();
+                            setJnsDok(cleanValue);
+                            console.log(jnsDok);
+                        }}
+                        style={[styles.input, { marginTop: 10 }]}
+                        placeholder="Jenis Dokumen"
+                    />
                 </View>
                 <View style={{ marginTop: 25, width: '90%' }}>
                     <View>
-                        <Button title="Selanjutnya" />
+                        <Button onPress={nextHandler} title="Selanjutnya" />
                     </View>
                 </View>
             </View>
@@ -152,7 +200,7 @@ const styles = StyleSheet.create({
     },
     buttons: {
         marginTop: 10,
-        marginBottom: 50,
+        marginBottom: 10,
         width: 120,
     },
     or: {

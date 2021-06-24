@@ -1,8 +1,32 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Button, Text, TextInput, StyleSheet } from 'react-native';
 
-const SignAuthScreen = () => {
+const axios = require('axios').default;
+
+const SignAuthScreen = ({ route, navigation }) => {
+    // console.log(route);
+
+    const [PIN, setPIN] = useState('');
+
+    const authHandler = () => {
+
+        axios.post('https://api-skripsi-digital-signature.herokuapp.com/sign-auth', {
+            usernameOrNoTelp: route.params.username,
+            password: route.params.password,
+            PIN: PIN,
+        }).then((response) => {
+            console.log(response.data);
+            if (response.data.auth) {
+                navigation.navigate('SignPad', { username: route.params.username });
+            } else {
+                console.log('Sign auth gagal!');
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    };
+
     return (
         <View style={styles.screen}>
             <View style={styles.title}>
@@ -10,12 +34,18 @@ const SignAuthScreen = () => {
             </View>
             <View style={styles.form}>
                 <View style={styles.inputs}>
-                    <TextInput style={styles.input} placeholder="Masukan PIN" />
+                    <TextInput
+                        onChangeText={(value) => {
+                            setPIN(value);
+                            console.log(PIN);
+                        }}
+                        style={styles.input}
+                        placeholder="Masukan PIN" />
 
                 </View>
                 <View style={styles.buttons}>
                     <View>
-                        <Button title="Submit" />
+                        <Button onPress={authHandler} title="Submit" />
                     </View>
                 </View>
             </View>

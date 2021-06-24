@@ -17,7 +17,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const Tab = createBottomTabNavigator();
 
-export default function TabStack({ navigation }) {
+
+export default function TabStack({ route, navigation }) {
     const logoutHandler = () => {
         navigation.navigate('LoginScreen');
     };
@@ -58,7 +59,11 @@ export default function TabStack({ navigation }) {
                     inactiveTintColor: 'gray',
                 }}
             >
-                <Tab.Screen name="Sign" component={SignStack} />
+                <Tab.Screen
+                    name="Sign"
+                    component={SignStack}
+                    initialParams={{ username: route.params.username, password: route.params.password }}
+                />
                 <Tab.Screen name="Verify" component={VerifyScreen} />
                 <Tab.Screen name="Send" component={SendStack} />
             </Tab.Navigator>
