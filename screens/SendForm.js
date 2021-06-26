@@ -4,6 +4,7 @@ import { Text, View, TextInput, Button, StyleSheet, Image, TouchableOpacity } fr
 import DocumentPicker from 'react-native-document-picker';
 import RNFS, { readFile } from 'fs';
 import WPSOffice from 'react-native-wps-office';
+import { io } from "socket.io-client";
 let uniqid = require('uniqid');
 
 
@@ -12,7 +13,7 @@ const SendForm = () => {
     const [isUploaded, setIsUploaded] = useState(false);
     const [docID, setDocID] = useState(uniqid());
     const [docTitle, setDocTitle] = useState('');
-
+    const [username, setUsername] = useState('');
 
     const pdfPickerHandler = async () => {
         try {
@@ -66,6 +67,65 @@ const SendForm = () => {
         //     });
     }
 
+    const sendFile = () => {
+        // const socket = io("https://api-skripsi-digital-signature.herokuapp.com");
+
+        // let user = 'djsn98';
+        // socket.on('user_connected', (message) => {
+        //     console.log(message);
+        //     socket.emit('doc_send', user);
+        //     // let disconnected = socket.disconnect();
+        //     // console.log(disconnected);
+        // });
+
+        // socket.on('doc_received', (data) => {
+        //     console.log(data);
+        //     // let disconnected = socket.disconnect();
+        //     // console.log(disconnected);
+        // });
+
+        // socket.emit('user_connected', user);
+
+
+        //test socket.io berhasil
+        //kirim pdf ke server
+        if (docURI != '' && username != '') {
+            let pdfToUpload = {
+                uri: `file://${docURI}`,
+                type: 'application/pdf',
+                name: docTitle,
+            };
+
+            console.log(pdfToUpload);
+
+            const form = new FormData();
+
+            form.append('username', username);
+            form.append('doc', pdfToUpload);
+
+            console.log(form._parts);
+
+            fetch('https://api-skripsi-digital-signature.herokuapp.com/send-file', {
+                method: 'POST',
+                body: form,
+                header: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            console.log('silahkan upload!');
+        }
+    };
+
     return (
         <View style={styles.screen}>
             <View style={styles.title}>
@@ -106,7 +166,7 @@ const SendForm = () => {
                 </View>
                 <View style={{ width: '90%' }}>
                     <View>
-                        <Button title="Kirim" />
+                        <Button onPress={sendFile} title="Kirim" />
                     </View>
                 </View>
             </View>
