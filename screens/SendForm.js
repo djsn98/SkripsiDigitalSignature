@@ -1,14 +1,15 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import { Text, View, TextInput, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Text, View, TextInput, Button, StyleSheet, Image, TouchableOpacity, BackHandler } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS, { readFile } from 'fs';
+import { useFocusEffect } from '@react-navigation/native';
 import WPSOffice from 'react-native-wps-office';
 import { io } from "socket.io-client";
 let uniqid = require('uniqid');
 
 
-const SendForm = ({ route }) => {
+const SendForm = ({ route, navigation }) => {
     const [docURI, setDocURI] = useState('');
     const [isUploaded, setIsUploaded] = useState(false);
     const [docID, setDocID] = useState(uniqid());
@@ -18,12 +19,32 @@ const SendForm = ({ route }) => {
     const [messageColor, setMessageColor] = useState('transparent');
     const [message, setMessage] = useState('Username harus diisi!');
 
-    const socket = io("https://api-skripsi-digital-signature.herokuapp.com");
-
     let user = route.params.username;
 
+
+
+    const socket = io("https://api-skripsi-digital-signature.herokuapp.com");
+    useFocusEffect(
+        React.useCallback(() => {
+            const backHandler = () => {
+                if (socket.connected) {
+                    socket.emit('before_disconnect', user);
+                }
+                navigation.navigate('SendScreen', { socketState: true });
+            };
+
+            BackHandler.addEventListener('hardwareBackPress', backHandler);
+
+            return () => BackHandler.removeEventListener('hardwareBackPress', backHandler);
+        }, [user, socket, navigation])
+    );
+
+
+
+
+
     socket.on('user_connected', (message) => {
-        console.log(message);
+        console.log(message.conMessage);
 
         // socket.emit('before_disconnect', user)
     });
@@ -32,9 +53,20 @@ const SendForm = ({ route }) => {
         console.log(message);
         console.log('doc recieved!');
 
-        setMessage(message);
-        setMessageColor('red');
+        if (username !== '') {
+            setMessage(message);
+            setMessageColor('green');
+            socket.emit('before_disconnect', user);
+            navigation.navigate('SendScreen');
+        }
+
         // socket.emit()
+    });
+
+    socket.on('before_disconnect', (message) => {
+        console.log(message);
+        let disconnected = socket.disconnect();
+        console.log(disconnected);
     });
 
     socket.emit('user_connected', user);
@@ -148,11 +180,7 @@ const SendForm = ({ route }) => {
                             }
                         };
 
-                        // socket.on('before_disconnect', (message) => {
-                        //     console.log(message);
-                        //     let disconnected = socket.disconnect();
-                        //     console.log(disconnected);
-                        // });
+
 
 
                         socket.emit('doc_send', data);

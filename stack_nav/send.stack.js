@@ -15,7 +15,7 @@ const SendStack = ({ route }) => {
             <Stack.Screen
                 name="SendScreen"
                 component={SendScreen}
-                initialParams={{ username: route.params.username }}
+                initialParams={{ username: route.params.username, socketState: true }}
             />
             <Stack.Screen name="SendForm" component={SendForm} />
             <Stack.Screen name="ReceiveDocScreen" component={ReceiveDocScreen} />
