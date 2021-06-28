@@ -65,7 +65,13 @@ export default function TabStack({ route, navigation }) {
                     initialParams={{ username: route.params.username, password: route.params.password }}
                 />
                 <Tab.Screen name="Verify" component={VerifyScreen} />
-                <Tab.Screen name="Send" component={SendStack} />
+                <Tab.Screen
+                    name="Send"
+                    component={SendStack}
+                    initialParams={{
+                        username: route.params.username
+                    }}
+                />
             </Tab.Navigator>
         </View>
     );

@@ -8,12 +8,38 @@ import { io } from "socket.io-client";
 let uniqid = require('uniqid');
 
 
-const SendForm = () => {
+const SendForm = ({ route }) => {
     const [docURI, setDocURI] = useState('');
     const [isUploaded, setIsUploaded] = useState(false);
     const [docID, setDocID] = useState(uniqid());
     const [docTitle, setDocTitle] = useState('');
     const [username, setUsername] = useState('');
+
+    const [messageColor, setMessageColor] = useState('transparent');
+    const [message, setMessage] = useState('Username harus diisi!');
+
+    const socket = io("https://api-skripsi-digital-signature.herokuapp.com");
+
+    let user = route.params.username;
+
+    socket.on('user_connected', (message) => {
+        console.log(message);
+
+        // socket.emit('before_disconnect', user)
+    });
+
+    socket.on(`doc_send_to_${user}`, (message) => {
+        console.log(message);
+        console.log('doc recieved!');
+
+        setMessage(message);
+        setMessageColor('red');
+        // socket.emit()
+    });
+
+    socket.emit('user_connected', user);
+
+
 
     const pdfPickerHandler = async () => {
         try {
@@ -68,32 +94,15 @@ const SendForm = () => {
     }
 
     const sendFile = () => {
-        // const socket = io("https://api-skripsi-digital-signature.herokuapp.com");
-
-        // let user = 'djsn98';
-        // socket.on('user_connected', (message) => {
-        //     console.log(message);
-        //     socket.emit('doc_send', user);
-        //     // let disconnected = socket.disconnect();
-        //     // console.log(disconnected);
-        // });
-
-        // socket.on('doc_received', (data) => {
-        //     console.log(data);
-        //     // let disconnected = socket.disconnect();
-        //     // console.log(disconnected);
-        // });
-
-        // socket.emit('user_connected', user);
-
-
         //test socket.io berhasil
         //kirim pdf ke server
         if (docURI != '' && username != '') {
+            let saveNameAs = `${username}-${uniqid()}.pdf`
+
             let pdfToUpload = {
                 uri: `file://${docURI}`,
                 type: 'application/pdf',
-                name: docTitle,
+                name: saveNameAs,
             };
 
             console.log(pdfToUpload);
@@ -117,6 +126,49 @@ const SendForm = () => {
                 .then(data => {
                     console.log(data);
 
+                    if (data.alreadyUser === true) {
+                        console.log('Pengiriman file berhasil!');
+                        // setMessage('Pengiriman file berhasil!');
+                        // setMessageColor('green');
+
+
+
+                        let data = {
+                            sender: user,
+                            messages: {
+                                receiver: username,
+                                name: null,
+                                photo: null,
+                                docs: [
+                                    {
+                                        name: docTitle,
+                                        uri: `https://api-skripsi-digital-signature.herokuapp.com/signed_files/${saveNameAs}`
+                                    },
+                                ]
+                            }
+                        };
+
+                        // socket.on('before_disconnect', (message) => {
+                        //     console.log(message);
+                        //     let disconnected = socket.disconnect();
+                        //     console.log(disconnected);
+                        // });
+
+
+                        socket.emit('doc_send', data);
+
+
+                        // socket.on('doc_received', (data) => {
+                        //     console.log(data);
+                        //     // let disconnected = socket.disconnect();
+                        //     // console.log(disconnected);
+                        // });
+
+
+                    } else {
+                        setMessage('Pengguna tidak terdaftar!');
+                        setMessageColor('red');
+                    }
                 })
                 .catch((error) => {
                     console.log(error);
@@ -162,7 +214,22 @@ const SendForm = () => {
                 }
 
                 <View style={styles.inputs}>
-                    <TextInput style={styles.input} placeholder="Username Penerima" />
+                    <TextInput
+                        onChangeText={(value) => {
+                            let cleanValue = value.trim();
+
+                            if (cleanValue != '') {
+                                setMessageColor('transparent');
+                                setUsername(value);
+                                console.log(username);
+                            } else {
+                                setMessageColor('red');
+                            }
+                        }}
+                        style={styles.input}
+                        placeholder="Username Penerima"
+                    />
+                    <Text style={{ marginHorizontal: 20, marginTop: 10, color: messageColor }}>{message}</Text>
                 </View>
                 <View style={{ width: '90%' }}>
                     <View>
@@ -204,7 +271,6 @@ const styles = StyleSheet.create({
     inputs: {
         alignSelf: 'stretch',
         height: 120,
-        justifyContent: 'space-between',
     },
     buttons: {
         marginTop: 10,

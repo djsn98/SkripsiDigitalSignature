@@ -21,7 +21,7 @@ const SendCard = (item, navigation) => {
     )
 };
 
-const DataProvidedSendScreen = ({ navigation }) => {
+const DataProvidedSendScreen = ({ route, navigation }) => {
     const [sendData, setSendData] = useContext(SendDataContext);
     return (
         <View>
@@ -34,7 +34,7 @@ const DataProvidedSendScreen = ({ navigation }) => {
                 keyExtractor={item => item.id}
             />
             <View style={{ marginTop: 550, position: 'absolute', elevation: 5, paddingRight: 5, justifyContent: 'center', alignItems: 'center', marginLeft: 275, borderRadius: 50, backgroundColor: '#2196F3', width: 72, height: 72 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('SendForm')}>
+                <TouchableOpacity onPress={() => navigation.navigate('SendForm', { username: route.params.username })}>
                     <FontAwesome name="send" size={30} color="white" />
                 </TouchableOpacity>
             </View>
@@ -42,12 +42,12 @@ const DataProvidedSendScreen = ({ navigation }) => {
     );
 };
 
-const SendScreen = ({ navigation }) => {
+const SendScreen = ({ route, navigation }) => {
     return (
         <SendDataProvider>
-            <DataProvidedSendScreen navigation={navigation} />
+            <DataProvidedSendScreen navigation={navigation} route={route} />
         </SendDataProvider>
-    )
+    );
 };
 
 export default SendScreen;

@@ -9,10 +9,14 @@ import ReceiveDocScreen from '../screens/ReceiveDocScreen';
 
 const Stack = createStackNavigator();
 
-const SendStack = () => {
+const SendStack = ({ route }) => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Send">
-            <Stack.Screen name="SendScreen" component={SendScreen} />
+            <Stack.Screen
+                name="SendScreen"
+                component={SendScreen}
+                initialParams={{ username: route.params.username }}
+            />
             <Stack.Screen name="SendForm" component={SendForm} />
             <Stack.Screen name="ReceiveDocScreen" component={ReceiveDocScreen} />
         </Stack.Navigator>
