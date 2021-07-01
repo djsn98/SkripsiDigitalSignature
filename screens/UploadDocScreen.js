@@ -38,11 +38,7 @@ const UploadDocScreen = ({ route, navigation }) => {
             setIsUploaded(true);
 
         } catch (err) {
-            if (DocumentPicker.isCancel(err)) {
-                // User cancelled the picker, exit any dialogs or menus and move on
-            } else {
-                throw err;
-            }
+            console.log(err);
         }
     };
 

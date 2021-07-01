@@ -1,15 +1,20 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import { View, Button, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { Button } from 'react-native-elements';
 
 const axios = require('axios').default;
 
 const SignAuthScreen = ({ route, navigation }) => {
     // console.log(route);
-
+    const [isLoading, setIsLoading] = useState(false);
     const [PIN, setPIN] = useState('');
 
     const authHandler = () => {
+        setIsLoading(true)
+        console.log(route.params.username);
+        console.log(route.params.password);
+
 
         axios.post('https://api-skripsi-digital-signature.herokuapp.com/sign-auth', {
             usernameOrNoTelp: route.params.username,
@@ -18,9 +23,11 @@ const SignAuthScreen = ({ route, navigation }) => {
         }).then((response) => {
             console.log(response.data);
             if (response.data.auth) {
+                setIsLoading(false)
                 navigation.navigate('SignPad', { username: route.params.username });
             } else {
                 console.log('Sign auth gagal!');
+                setIsLoading(false)
             }
         }).catch((err) => {
             console.log(err);
@@ -45,7 +52,11 @@ const SignAuthScreen = ({ route, navigation }) => {
                 </View>
                 <View style={styles.buttons}>
                     <View>
-                        <Button onPress={authHandler} title="Submit" />
+                        <Button
+                            onPress={authHandler}
+                            loading={isLoading}
+                            title="Submit"
+                        />
                     </View>
                 </View>
             </View>

@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import { Text, View, TextInput, Button, StyleSheet, Image, TouchableOpacity, BackHandler } from 'react-native';
+import { Text, View, TextInput, StyleSheet, Image, TouchableOpacity, BackHandler } from 'react-native';
+import { Button } from 'react-native-elements';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS, { readFile } from 'fs';
 import { useFocusEffect } from '@react-navigation/native';
@@ -10,6 +11,8 @@ let uniqid = require('uniqid');
 
 
 const SendForm = ({ route, navigation }) => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const [docURI, setDocURI] = useState('');
     const [isUploaded, setIsUploaded] = useState(false);
     const [docID, setDocID] = useState(uniqid());
@@ -19,11 +22,22 @@ const SendForm = ({ route, navigation }) => {
     const [messageColor, setMessageColor] = useState('transparent');
     const [message, setMessage] = useState('Username harus diisi!');
 
+    const [isUploadedMess, setIsUploadedMess] = useState('transparent');
+
+
     let user = route.params.username;
 
 
+    // let socket = false;
+    // if (!socket) {
+    //     if (!socket.connected) {
+    //         socket = io("https://api-skripsi-digital-signature.herokuapp.com");
+    //     }
 
-    const socket = io("https://api-skripsi-digital-signature.herokuapp.com");
+    // }
+
+    let socket = io({ autoConnect: false });
+
     useFocusEffect(
         React.useCallback(() => {
             const backHandler = () => {
@@ -39,37 +53,42 @@ const SendForm = ({ route, navigation }) => {
         }, [user, socket, navigation])
     );
 
+    // let socket = io("https://api-skripsi-digital-signature.herokuapp.com");
+    // socket.on('user_connected', (message) => {
+    //     console.log(message.conMessage);
 
+    //     // socket.emit('before_disconnect', user)
+    // });
 
+    // socket.on(`doc_send_to_${user}`, (message) => {
+    //     console.log(message);
+    //     console.log(message[0].docs);
+    //     console.log('doc recieved!');
 
+    //     if (username !== '') {
+    //         setMessage('Pengiriman berhasil!');
+    //         setMessageColor('green');
+    //         socket.emit('before_disconnect', user);
+    //         navigation.navigate('SendScreen');
+    //     }
 
-    socket.on('user_connected', (message) => {
-        console.log(message.conMessage);
+    //     // socket.emit()
+    // });
 
-        // socket.emit('before_disconnect', user)
-    });
+    // socket.on('before_disconnect', (message) => {
+    //     console.log(message);
+    //     let disconnected = socket.disconnect();
+    //     console.log(disconnected);
+    // });
 
-    socket.on(`doc_send_to_${user}`, (message) => {
-        console.log(message);
-        console.log('doc recieved!');
+    // socket.on('disconnect', (reason) => {
+    //     console.log(reason);
+    //     if (reason === "ping timeout") {
+    //         socket.connect();
+    //     }
+    // });
 
-        if (username !== '') {
-            setMessage(message);
-            setMessageColor('green');
-            socket.emit('before_disconnect', user);
-            navigation.navigate('SendScreen');
-        }
-
-        // socket.emit()
-    });
-
-    socket.on('before_disconnect', (message) => {
-        console.log(message);
-        let disconnected = socket.disconnect();
-        console.log(disconnected);
-    });
-
-    socket.emit('user_connected', user);
+    // socket.emit('user_connected', user);
 
 
 
@@ -88,11 +107,7 @@ const SendForm = ({ route, navigation }) => {
             setIsUploaded(true);
 
         } catch (err) {
-            if (DocumentPicker.isCancel(err)) {
-                // User cancelled the picker, exit any dialogs or menus and move on
-            } else {
-                throw err;
-            }
+            console.log(err);
         }
     };
 
@@ -128,7 +143,9 @@ const SendForm = ({ route, navigation }) => {
     const sendFile = () => {
         //test socket.io berhasil
         //kirim pdf ke server
-        if (docURI != '' && username != '') {
+        setIsLoading(true);
+
+        if (docURI !== '' && username !== '') {
             let saveNameAs = `${username}-${uniqid()}.pdf`
 
             let pdfToUpload = {
@@ -174,16 +191,53 @@ const SendForm = ({ route, navigation }) => {
                                 docs: [
                                     {
                                         name: docTitle,
-                                        uri: `https://api-skripsi-digital-signature.herokuapp.com/signed_files/${saveNameAs}`
+                                        uri: `https://api-skripsi-digital-signature.herokuapp.com/sended_files/${saveNameAs}`
                                     },
                                 ]
                             }
                         };
 
+                        socket = io("https://api-skripsi-digital-signature.herokuapp.com");
+                        socket.on('user_connected', (message) => {
+                            console.log(message.conMessage);
+                            // socket.emit('before_disconnect', user)
+                        });
 
+                        socket.on(`doc_send_to_${user}`, (dataPengirim) => {
+                            console.log(dataPengirim);
+                            // console.log(dataPengirim[0].docs);
+                            console.log('doc recieved!');
 
+                            if (username !== '') {
+                                setMessage('Pengiriman berhasil!');
+                                setMessageColor('green');
+                                setIsLoading(true);
+                                socket.emit('before_disconnect', user);
+                                navigation.navigate('SendScreen');
+                            }
 
+                            // socket.emit()
+                        });
+
+                        socket.on('before_disconnect', (message) => {
+                            console.log(message);
+                            let disconnected = socket.disconnect();
+                            console.log(disconnected);
+                        });
+
+                        socket.on('disconnect', (reason) => {
+                            console.log(reason);
+                            if (reason === "ping timeout") {
+                                socket.connect();
+                            }
+                        });
+
+                        socket.emit('user_connected', user);
                         socket.emit('doc_send', data);
+
+
+
+
 
 
                         // socket.on('doc_received', (data) => {
@@ -201,8 +255,13 @@ const SendForm = ({ route, navigation }) => {
                 .catch((error) => {
                     console.log(error);
                 });
-        } else {
+        } else if (docURI !== '' && username === '') {
+            setMessage('Username harus diisi!');
+            setMessageColor('red');
+        }
+        else {
             console.log('silahkan upload!');
+            setIsUploadedMess('red');
         }
     };
 
@@ -233,10 +292,13 @@ const SendForm = ({ route, navigation }) => {
                         </TouchableOpacity>
                     )
                     : (
-                        <View style={styles.buttons}>
-                            <View>
-                                <Button onPress={pdfPickerHandler} title="+ Upload Doc" />
+                        <View style={{ alignItems: 'center', marginBottom: 25 }}>
+                            <View style={styles.buttons}>
+                                <View>
+                                    <Button onPress={pdfPickerHandler} title="+ Upload Doc" />
+                                </View>
                             </View>
+                            <Text style={{ fontSize: 15, color: isUploadedMess }}>Silahkan upload file anda!</Text>
                         </View>
                     )
                 }
@@ -261,7 +323,11 @@ const SendForm = ({ route, navigation }) => {
                 </View>
                 <View style={{ width: '90%' }}>
                     <View>
-                        <Button onPress={sendFile} title="Kirim" />
+                        <Button
+                            onPress={sendFile}
+                            loading={isLoading}
+                            title="Kirim"
+                        />
                     </View>
                 </View>
             </View>
@@ -302,7 +368,7 @@ const styles = StyleSheet.create({
     },
     buttons: {
         marginTop: 10,
-        marginBottom: 50,
+        marginBottom: 15,
         width: 120,
     },
     or: {
