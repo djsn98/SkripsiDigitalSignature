@@ -56,21 +56,16 @@ const LoginScreen = ({ route, navigation }) => {
             setIsLoading(false);
         } else {
             console.log(uniqid());
-            // navigation.navigate('TabStack');
             axios.post('https://api-skripsi-digital-signature.herokuapp.com/login', {
                 usernameOrNoTelp: usernameOrNoTelp,
                 password: password,
             }).then((response) => {
                 console.log(response.data);
-                // setUsername(response.data.data[0].Username);
                 setAuth(response.data.auth);
                 setLoginMessage('Username/No.Telp atau Password Salah!')
                 setLoginState('red');
                 setIsLoading(false)
                 console.log(auth);
-                // while (auth == false) {
-                //     console.log(auth);
-                // }
             }).catch((error) => {
                 console.log(error);
             });

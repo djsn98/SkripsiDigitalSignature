@@ -42,16 +42,12 @@ const DataProvidedSendScreen = ({ route, navigation }) => {
         socket.on('user_connected', (message) => {
             console.log(message);
             setSendData(message.data.reverse());
-
-            // socket.emit('before_disconnect', user)
         });
 
         socket.on(`doc_send_to_${username}`, (message) => {
             console.log(message);
-            // console.log(message[0].docs);
-            setSendData(message.reverse());
 
-            // socket.emit('before_disconnect', user)
+            setSendData(message.reverse());
         });
 
         socket.on('before_disconnect', (message) => {
@@ -70,20 +66,8 @@ const DataProvidedSendScreen = ({ route, navigation }) => {
         socket.emit('user_connected', username);
     }
 
-
-
-
-
-    // if (!socket) {
-    //     socket = io.connect("https://api-skripsi-digital-signature.herokuapp.com");
-    // }
-
-
     return (
         <View>
-            {/* <View style={{ height: '86.8%', alignItems: 'center', justifyContent: 'center' }}>
-                <Text>Tidak ada dokumen.</Text>
-            </View> */}
             <FlatList
                 data={sendData}
                 renderItem={({ item }) => SendCard(item, navigation)}

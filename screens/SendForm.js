@@ -235,18 +235,6 @@ const SendForm = ({ route, navigation }) => {
                         socket.emit('user_connected', user);
                         socket.emit('doc_send', data);
 
-
-
-
-
-
-                        // socket.on('doc_received', (data) => {
-                        //     console.log(data);
-                        //     // let disconnected = socket.disconnect();
-                        //     // console.log(disconnected);
-                        // });
-
-
                     } else {
                         setMessage('Pengguna tidak terdaftar!');
                         setMessageColor('red');

@@ -5,7 +5,7 @@ import Signature from 'react-native-signature-canvas';
 import RNFS, { readFile } from 'fs';
 import fetch_blob from 'react-native-fetch-blob';
 import CameraRoll from '@react-native-community/cameraroll';
-// import { RemoveBgResult, RemoveBgError, removeBackgroundFromImageBase64 } from "remove.bg";
+
 let uniqid = require('uniqid');
 const axios = require('axios').default;
 
@@ -15,14 +15,10 @@ const SignPad = ({ route, navigation }) => {
 
 
     const handleSignature = (signature) => {
-        //// navigation.navigate('UploadDocScreen', { username: route.params.username, SN: 213123, filePath: 23324 })
-        // console.log(signature);
         setSign(signature);
-        // const path = RNFS.DocumentDirectoryPath + '/image.png';
-        // console.log(path);
+
         let SN = uniqid();
         let base64Sign = signature.replace('data:image/png;base64,', '');
-
 
         console.log(SN);
         axios.post('https://api-skripsi-digital-signature.herokuapp.com/remove-background', {
@@ -35,26 +31,9 @@ const SignPad = ({ route, navigation }) => {
 
                 let base64SignRemoveBackground = data;
 
-                // try {
-                //     const granted = await PermissionsAndroid.requestMultiple([
-                //         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                //         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                //     ]);
-                // } catch (err) {
-                //     console.warn(err);
-                // }
-                // const readGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-                // const writeGranted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-                // if (!readGranted || !writeGranted) {
-                //     console.log('Read and write permissions have not been granted');
-                //     return;
-                // }
 
-                // const fs = fetch_blob.fs;
                 const dirs = fetch_blob.fs.dirs;
-                //Tulis Ulang
 
-                // let sign_id = uniqid();
                 const file_name = `${base64SignRemoveBackground.serialNumber}.png`;
                 const file_path = `${dirs.PictureDir}/sign/${file_name}`;
                 console.log(file_path);
@@ -78,24 +57,6 @@ const SignPad = ({ route, navigation }) => {
         }).catch((error) => {
             console.log(error);
         });
-
-        // RNFS.readFile(path, 'base64')
-        //     .then((data) => {
-        //         console.log(data);
-        //         setSign(`data:image/png;base64,${data}`);
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //     });
-
-        // RNFS.unlink(path)
-        //     .then(() => {
-        //         console.log('FILE DELETED');
-        //     })
-        //     // `unlink` will throw an error, if the item to unlink does not exist
-        //     .catch((err) => {
-        //         console.log(err.message);
-        //     });
     };
 
     const handleEmpty = () => {

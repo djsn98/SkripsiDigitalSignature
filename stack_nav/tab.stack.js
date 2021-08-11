@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 
 import VerifyScreen from '../screens/VerifyScreen';
+import IndexScreen from '../screens/IndexScreen';
 import SignStack from './sign.stack';
 import SendStack from './send.stack';
 
@@ -47,6 +48,10 @@ export default function TabStack({ route, navigation }) {
                         iconName = focused
                             ? 'md-send-sharp'
                             : 'md-send-outline';
+                    } else if (route.name === 'Home') {
+                        iconName = focused
+                            ? 'home'
+                            : 'home-outline'
                     }
                     if (iconName === 'signature') {
                         return <FontAwesome5 name={iconName} size={size} color={color} />;
@@ -59,6 +64,7 @@ export default function TabStack({ route, navigation }) {
                     inactiveTintColor: 'gray',
                 }}
             >
+                <Tab.Screen name="Home" component={IndexScreen} />
                 <Tab.Screen
                     name="Sign"
                     component={SignStack}

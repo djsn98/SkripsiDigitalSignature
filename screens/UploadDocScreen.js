@@ -19,9 +19,6 @@ const UploadDocScreen = ({ route, navigation }) => {
     const [isDocUploaded, setIsDocUploaded] = useState('transparent');
     const [isDocNameFilled, setIsDocNameFilled] = useState('transparent');
 
-    // console.log(route);
-    // console.log(docID);
-
     const pdfPickerHandler = async () => {
         try {
             const res = await DocumentPicker.pick({
@@ -62,13 +59,6 @@ const UploadDocScreen = ({ route, navigation }) => {
         catch (e) {
             console.log(e);
         }
-        // RNFS.readFile(res.uri, 'base64')
-        //     .then((data) => {
-        //         console.log(data);
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //     });
     };
 
     const nextHandler = () => {

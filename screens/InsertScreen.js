@@ -22,16 +22,7 @@ const InsertScreen = ({ route, navigation }) => {
 
     const [isRegisterCompleted, setIsRegisterCompleted] = useState(false);
 
-    // const [buttonHandler, setButtonHandler] = useState(registerSignHandler);
-
-
-
     console.log(route.params);
-
-
-    // function backHandler() {
-    //     navigation.navigate('SignAuthScreen');
-    // };
 
     const registerSignHandler = () => {
         if (isRegisterCompleted) {
@@ -94,144 +85,6 @@ const InsertScreen = ({ route, navigation }) => {
                 .catch((error) => {
                     console.log(error);
                 });
-
-
-            // RNFS.readFile(route.params.docURI, 'base64')
-            //     .then((data) => {
-            //         let base64PDF = data;
-
-            //         // let dataPart = [];
-            //         let part1 = base64PDF.slice(0, 100000);
-            //         console.log(part1.length);
-            //         let part2 = base64PDF.slice(100000, 200000);
-            //         console.log(part2.length);
-            //         let part3 = base64PDF.slice(200000, 300000);
-            //         console.log(part3.length);
-            //         let part4 = base64PDF.slice(300000, 400000);
-            //         console.log(part4.length);
-            //         let part5 = base64PDF.slice(400000, 500000);
-            //         console.log(part5.length);
-            //         let part6 = base64PDF.slice(500000);
-            //         console.log(part6.length);
-            //         console.log(base64PDF.length);
-
-            //         // dataPart.push(part1);
-            //         // dataPart.push(part2);
-            //         // dataPart.push(part3);
-            //         // dataPart.push(part4);
-            //         // dataPart.push(part5);
-            //         // dataPart.push(part6);
-
-            //         // console.log(dataPart);
-
-            //         axios.post('https://api-skripsi-digital-signature.herokuapp.com/sign-register', {
-            //             doc: part1,
-            //             last: false,
-            //         }).then((response) => {
-            //             console.log(response.data);
-            //             axios.post('https://api-skripsi-digital-signature.herokuapp.com/sign-register', {
-            //                 doc: part2,
-            //                 last: false,
-            //             }).then((response) => {
-            //                 console.log(response.data);
-            //                 axios.post('https://api-skripsi-digital-signature.herokuapp.com/sign-register', {
-            //                     doc: part3,
-            //                     last: false,
-            //                 }).then((response) => {
-            //                     console.log(response.data);
-            //                     axios.post('https://api-skripsi-digital-signature.herokuapp.com/sign-register', {
-            //                         doc: part4,
-            //                         last: false,
-            //                     }).then((response) => {
-            //                         console.log(response.data);
-            //                         axios.post('https://api-skripsi-digital-signature.herokuapp.com/sign-register', {
-            //                             doc: part5,
-            //                             last: false,
-            //                         }).then((response) => {
-            //                             console.log(response.data);
-            //                             axios.post('https://api-skripsi-digital-signature.herokuapp.com/sign-register', {
-            //                                 doc: part6,
-            //                                 last: true,
-            //                                 username: route.params.username,
-            //                                 SN: route.params.SN,
-            //                                 // signBase64: base64Sign,
-            //                                 tglPembuatan: signDate,
-            //                                 IDDok: route.params.docID,
-            //                                 namaDok: route.params.namaDok,
-            //                                 // docBase64: base64PDF,
-            //                                 jenisDok: route.params.jnsDok,
-            //                             }).then((response) => {
-            //                                 console.log(response.data);
-            //                             }).catch((err) => {
-            //                                 console.log(err);
-            //                             });
-            //                         }).catch((err) => {
-            //                             console.log(err);
-            //                         });
-            //                     }).catch((err) => {
-            //                         console.log(err);
-            //                     });
-            //                 }).catch((err) => {
-            //                     console.log(err);
-            //                 });
-            //             }).catch((err) => {
-            //                 console.log(err);
-            //             });
-            //         }).catch((err) => {
-            //             console.log(err);
-            //         });
-            //102000
-
-
-
-            // })
-            // .catch((error) => {
-            //     console.log(error);
-            // });
-
-
-            // RNFS.readFile(route.params.docURI, 'base64')
-            //     .then((data) => {
-            //         let base64PDF = data;
-
-            //         RNFS.readFile(route.params.signPath, 'base64')
-            //             .then((data) => {
-            //                 let base64Sign = data;
-
-            //                 // console.log(base64Sign);
-            //                 axios.post('https://api-skripsi-digital-signature.herokuapp.com/sign-register', {
-            //                     username: route.params.username,
-            //                     SN: route.params.SN,
-            //                     // signBase64: base64Sign,
-            //                     tglPembuatan: signDate,
-            //                     IDDok: route.params.docID,
-            //                     namaDok: route.params.namaDok,
-            //                     docBase64: base64PDF,
-            //                     jenisDok: route.params.jnsDok,
-            //                 }).then((response) => {
-            //                     console.log(response.data);
-            //                 }).catch((err) => {
-            //                     console.log(err);
-            //                 });
-            //             })
-            //             .catch((error) => {
-            //                 console.log(error);
-            //             });
-            //     })
-            //     .catch((error) => {
-            //         console.log(error);
-            //     });
-
-
-
-            // if (buttonName === 'Register Sign') {
-            //     setIsLoading(true);
-
-            //     setTimeout(() => {
-            //         setButtonName('selesai');
-            //         setIsLoading(false);
-            //     }, 10000);
-            // }
         }
 
     };
@@ -246,7 +99,7 @@ const InsertScreen = ({ route, navigation }) => {
         try {
             console.log(docURI);
             WPSOffice.open(
-                docURI,   //or: /storage/emulated/0/Android/data/com.your.package/files/test.pdf
+                docURI,
                 'application/pdf',
                 wpsOptions
             )
@@ -257,14 +110,6 @@ const InsertScreen = ({ route, navigation }) => {
         catch (e) {
             console.log(e);
         }
-        // RNFS.readFile(res.uri, 'base64')
-        //     .then((data) => {
-        //         console.log(data);
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //     });
-
     }
     return (
         <View>
@@ -302,8 +147,6 @@ const InsertScreen = ({ route, navigation }) => {
                     <Text style={{ marginRight: 30 }}>{route.params.docTitle}</Text>
 
                     <TouchableOpacity onPress={() => {
-                        // setDocURI('');
-                        // setIsUploaded(false)
                         console.log('File batal diupload')
                     }}>
                         <View style={{ marginRight: 5 }}>

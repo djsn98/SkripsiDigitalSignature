@@ -7,8 +7,6 @@ import { SendDataProvider, SendDataContext } from '../data_provider/SendDataProv
 import { ExternalDirectoryPath, downloadFile } from 'fs';
 
 const DocCard = (item) => {
-    // const [docURI, setDocURI] = useState(item.uri);
-
 
     const openPDFHandler = () => {
         console.log(item);
