@@ -24,7 +24,7 @@ Aplikasi tanda tangan digital yang aman karena dilengkapi serial number dan id d
 Klik link di bawah:
 https://drive.google.com/file/d/17oS8xLh-6zOiPCvfxrvg-E9w3L0Ghb2p/view?usp=sharing
 
-Ket: Skripsi sudah disidangkan dan sudah di ACC, hanya tinggal menunggu selesai proses TTD saja.
+Ket: Skripsi sudah disidangkan dan sudah di ACC, sebagian sudah di TTD, tinggal beberapa masih menunggu selesai proses TTD saja.
 
 ## Cara Menjalankan Aplikasi
 1. Hubungkan HP dengan kabel data
