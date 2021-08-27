@@ -1,5 +1,7 @@
-# Secure Digital Signature
+# Secure Digital Signature Apps
 Aplikasi tanda tangan digital yang aman karena dilengkapi serial number dan id dokumen pada setiap tanda tangan. Dilengkapi juga fitur untuk melakukan verifikasi tanda tangan.
+
+Aplikasi ini dibuat sebagai implementasi dari skripsi "**Perancangan Sistem Informasi Secure Digital Signature Berbasis Mobile Apps Pada PT. Buana Cahaya Abadi Mandiri**".
 
 ## Stack Teknologi
 
